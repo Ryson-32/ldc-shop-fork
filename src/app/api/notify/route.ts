@@ -29,10 +29,15 @@ async function processNotify(params: Record<string, any>) {
     console.log("[Notify] Signature verified OK. trade_status:", params.trade_status);
 
     if (params.trade_status === 'TRADE_SUCCESS') {
-        const orderId = params.out_trade_no;
+        let orderId = params.out_trade_no;
+        // Strip retry suffix if present (e.g. ORDER123_retry173654)
+        if (orderId.includes('_retry')) {
+            orderId = orderId.split('_retry')[0];
+        }
+
         const tradeNo = params.trade_no;
 
-        console.log("[Notify] Processing order:", orderId);
+        console.log("[Notify] Processing order:", orderId, "(original:", params.out_trade_no, ")");
 
         // Find Order
         const order = await db.query.orders.findFirst({

@@ -396,10 +396,15 @@ export async function getRetryPaymentParams(orderId: string) {
 
     // Generate Pay Params
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
+    // Fix: EPay requires unique out_trade_no for every request.
+    // We append a timestamp suffix for retries, and strip it in the notify handler.
+    const uniqueTradeNo = `${order.orderId}_retry${Date.now()}`;
+
     const payParams: Record<string, any> = {
         pid: process.env.MERCHANT_ID!,
         type: 'epay',
-        out_trade_no: order.orderId,
+        out_trade_no: uniqueTradeNo,
         notify_url: `${baseUrl}/api/notify`,
         return_url: `${baseUrl}/callback/${order.orderId}`,
         name: order.productName,
