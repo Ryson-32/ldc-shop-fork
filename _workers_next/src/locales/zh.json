@@ -311,7 +311,11 @@
             "importing": "导入中...",
             "importSuccess": "导入完成！成功：{{count}}，失败/跳过：{{errors}}",
             "tabExport": "数据导出",
-            "tabImport": "数据导入"
+            "tabImport": "数据导入",
+            "repairTitle": "数据修复",
+            "repairDesc": "如果您从 Vercel 版本导入了数据并遇到排序问题（新订单排在底部），请运行此工具修复时间戳格式。",
+            "repairBtn": "修复排序问题",
+            "repairConfirm": "确定要修复时间戳吗？这将把 Vercel 风格的文本日期转换为 Workers 风格的数字格式。"
         },
         "reviews": {
             "title": "评价管理",

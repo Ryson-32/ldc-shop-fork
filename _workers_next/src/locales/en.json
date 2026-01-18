@@ -311,7 +311,11 @@
             "importing": "Importing...",
             "importSuccess": "Import completed! Success: {{count}}, Failed/Skipped: {{errors}}",
             "tabExport": "Data Export",
-            "tabImport": "Data Import"
+            "tabImport": "Data Import",
+            "repairTitle": "Data Repair",
+            "repairDesc": "If you imported data from Vercel version and see sorting issues (new orders at bottom), run this tool to fix timestamp formats.",
+            "repairBtn": "Fix Timestamp Sorting",
+            "repairConfirm": "Repair timestamps? This will convert Vercel-style text dates to Workers-style numbers."
         },
         "reviews": {
             "title": "Reviews",
