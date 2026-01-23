@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { BuyContent } from "@/components/buy-content"
 import { BuyRestricted } from "@/components/buy-restricted"
-import { cancelExpiredOrders, getProduct, getProductReviews, getProductRating, canUserReview, getProductVisibility } from "@/lib/db/queries"
+import { cancelExpiredOrders, cleanupExpiredCardsIfNeeded, getProduct, getProductReviews, getProductRating, canUserReview, getProductVisibility } from "@/lib/db/queries"
 import { getEmailSettings } from "@/lib/email"
 import { cacheLife, cacheTag } from "next/cache"
 
@@ -34,6 +34,7 @@ export default async function BuyPage({ params }: BuyPageProps) {
     }
 
     try {
+        await cleanupExpiredCardsIfNeeded(undefined, id)
         // Ensure expired reservations are released when visiting the product page
         await cancelExpiredOrders({ productId: id })
     } catch {

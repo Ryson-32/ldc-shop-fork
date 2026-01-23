@@ -1,7 +1,14 @@
-import { getProducts, getSetting } from "@/lib/db/queries"
+import { cleanupExpiredCardsIfNeeded, getProducts, getSetting } from "@/lib/db/queries"
+import { cookies } from "next/headers"
 import { AdminProductsContent } from "@/components/admin/products-content"
 
 export default async function AdminPage() {
+    await cookies()
+    try {
+        await cleanupExpiredCardsIfNeeded()
+    } catch {
+        // best effort
+    }
     const [products, lowStockThreshold] = await Promise.all([
         getProducts(),
         (async () => {

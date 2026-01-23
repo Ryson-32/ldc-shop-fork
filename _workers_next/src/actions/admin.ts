@@ -188,6 +188,27 @@ export async function addCards(formData: FormData) {
 
     const productId = formData.get('product_id') as string
     const rawCards = formData.get('cards') as string
+    const hoursRaw = String(formData.get('expires_hours') || '').trim()
+    const minutesRaw = String(formData.get('expires_minutes') || '').trim()
+    const hasStructured = hoursRaw !== '' || minutesRaw !== ''
+
+    let expiresInMs: number | null = null
+
+    if (hasStructured) {
+        const hours = hoursRaw === '' ? 0 : Number(hoursRaw)
+        const minutes = minutesRaw === '' ? 0 : Number(minutesRaw)
+        const validInts = Number.isInteger(hours) && Number.isInteger(minutes)
+        if (!validInts || hours < 0 || minutes < 0 || minutes > 59) {
+            throw new Error("Invalid expiry duration")
+        }
+        const totalMinutes = hours * 60 + minutes
+        if (totalMinutes <= 0) {
+            throw new Error("Invalid expiry duration")
+        }
+        expiresInMs = totalMinutes * 60 * 1000
+    }
+
+    const expiresAt = expiresInMs ? new Date(Date.now() + expiresInMs) : null
 
     const cardList = rawCards
         .split(/[\n,]+/)
@@ -204,7 +225,8 @@ export async function addCards(formData: FormData) {
         await db.insert(cards).values(
             batch.map(key => ({
                 productId,
-                cardKey: key
+                cardKey: key,
+                expiresAt
             }))
         )
     }
